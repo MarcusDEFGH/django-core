@@ -5,3 +5,5 @@ Lib
 Scripts
 tcl
 .env
+.vscode
+db.sqlite3
