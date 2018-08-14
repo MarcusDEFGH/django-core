@@ -7,6 +7,8 @@ from django.shortcuts import redirect
 from .models import PostModel
 # Create your views here.
 
+
+@login_required(login_url='/login')
 def post_model_create_view(request):
 
     # if request.method == 'post':
@@ -31,11 +33,34 @@ def post_model_create_view(request):
     return render(request, template, context)
 
 
+@login_required(login_url='/login')
+def post_model_update_view(request, id):
+
+    # if request.method == 'post':
+    #     # print(request.POST)
+    #     form = PostModelForm(request.POST)
+    #     if form.is_valid():
+    #         form.save(commit=False)
+    #         print(form.cleaned_data)
+
+    obj = get_object_or_404(PostModel, pk=id)
+    form = PostModelForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        obj = form.save(commit=False)
+        obj.save()
+        messages.success(request, "Updated {}".format(obj.title))
+        return redirect("/blog/".format(id=obj.id))
+
+    context = {
+        "form": form
+        }
+    template = "blog/update-view.html"
+    return render(request, template, context)
 
 
 @login_required(login_url='/login')
 def post_model_detail_view(request, id=None):
-    
+
     # first way to do it
     # try:
     #     obj = PostModel.objects.get(id=id)
