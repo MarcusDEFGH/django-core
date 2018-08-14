@@ -8,7 +8,7 @@ from .models import PostModel
 # Create your views here.
 
 
-@login_required(login_url='/login')
+@login_required(login_url='/admin/login')
 def post_model_create_view(request):
 
     # if request.method == 'post':
@@ -33,7 +33,7 @@ def post_model_create_view(request):
     return render(request, template, context)
 
 
-@login_required(login_url='/login')
+@login_required(login_url='/admin/login')
 def post_model_update_view(request, id):
 
     # if request.method == 'post':
@@ -58,7 +58,7 @@ def post_model_update_view(request, id):
     return render(request, template, context)
 
 
-@login_required(login_url='/login')
+@login_required(login_url='/admin/login')
 def post_model_detail_view(request, id=None):
 
     # first way to do it
@@ -84,7 +84,22 @@ def post_model_detail_view(request, id=None):
     return render(request, template_path, context)
 
 
-@login_required(login_url='/login')
+@login_required(login_url='/admin/login')
+def post_model_delete_view(request, id=None): 
+    obj = get_object_or_404(PostModel, id=id)
+    title = obj.title
+    if request.method == 'POST':
+        obj.delete()
+        messages.success(request, "Deleted post.")
+        return redirect("/blog/")
+    context = {
+        "object": obj
+    }
+    template_path = 'blog/delete-view.html'
+    return render(request, template_path, context)
+
+
+@login_required(login_url='/admin/login')
 def post_model_list_view(request):
     qs = PostModel.objects.all()
     template_path = 'blog/list-view.html'
